@@ -12,6 +12,8 @@ import Reports from './pages/Reports';
 import Integrations from './pages/Integrations';
 import Settings from './pages/Settings';
 import DatabaseConsole from './pages/DatabaseConsole';
+import BorrowerApp from './pages/borrower/BorrowerApp';
+import ApiDocs from './pages/ApiDocs';
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/app/integrations" element={<Layout><Integrations /></Layout>} />
           <Route path="/app/settings" element={<Layout><Settings /></Layout>} />
           <Route path="/app/database" element={<Layout><DatabaseConsole /></Layout>} />
+          <Route path="/borrower" element={<BorrowerApp />} />
+          <Route path="/docs/api" element={<ApiDocs />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

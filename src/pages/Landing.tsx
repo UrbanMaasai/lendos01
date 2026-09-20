@@ -17,7 +17,8 @@ export default function Landing() {
             <a href="#features" className="text-sm text-gray-600 hover:text-gray-900">Features</a>
             <a href="#compliance" className="text-sm text-gray-600 hover:text-gray-900">Compliance</a>
             <a href="#pricing" className="text-sm text-gray-600 hover:text-gray-900">Pricing</a>
-            <a href="#integrations" className="text-sm text-gray-600 hover:text-gray-900">Integrations</a>
+            <Link to="/docs/api" className="text-sm text-gray-600 hover:text-gray-900">API Docs</Link>
+            <Link to="/borrower" className="text-sm text-gray-600 hover:text-gray-900">Borrower App</Link>
           </nav>
           <div className="flex items-center gap-3">
             <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900">Sign In</Link>

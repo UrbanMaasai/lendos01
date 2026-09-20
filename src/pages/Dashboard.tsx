@@ -71,8 +71,14 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link to="/borrower" className="text-sm bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg hover:bg-emerald-200 font-medium">
+            📱 Borrower App
+          </Link>
+          <Link to="/docs/api" className="text-sm bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-200 font-medium">
+            📖 API Docs
+          </Link>
           <Link to="/app/database" className="text-sm bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-200 font-medium">
-            Open Backend Console →
+            ⚙️ Backend Console
           </Link>
         </div>
       </div>

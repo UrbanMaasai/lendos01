@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, FileText, Phone, Package, Shield, BarChart3, 
   Plug, Settings, ChevronLeft, ChevronRight, Bell, Search,
-  Menu, LogOut, User
+  Menu, LogOut, User, Database
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -18,6 +18,7 @@ const navigation = [
   { name: 'Compliance', href: '/app/compliance', icon: Shield },
   { name: 'Reports', href: '/app/reports', icon: BarChart3 },
   { name: 'Integrations', href: '/app/integrations', icon: Plug },
+  { name: 'Database', href: '/app/database', icon: Database },
   { name: 'Settings', href: '/app/settings', icon: Settings },
 ];
 

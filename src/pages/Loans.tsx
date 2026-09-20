@@ -1,22 +1,38 @@
 import { useState } from 'react';
-import { loans } from '../data/mockData';
+import { useDB } from '../contexts/DataContext';
+import type { Loan } from '../db/schema';
 import { Search, Filter, Download, Eye, AlertTriangle, Shield, Clock, CheckCircle } from 'lucide-react';
 
 export default function Loans() {
+  const { db, loading } = useDB();
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredLoans = loans.filter(loan => {
+  if (loading || !db) {
+    return <div className="flex items-center justify-center h-96"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>;
+  }
+
+  const loans = db.loans as Loan[];
+  const borrowers = db.borrowers;
+
+  const enrichedLoans = loans.map(loan => ({
+    ...loan,
+    borrower: borrowers.find(b => b.id === loan.borrowerId),
+    product: db.products.find(p => p.id === loan.productId),
+  }));
+
+  const filteredLoans = enrichedLoans.filter(loan => {
     const matchesStatus = filterStatus === 'all' || loan.status === filterStatus;
-    const matchesSearch = loan.borrowerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const borrowerName = loan.borrower ? `${loan.borrower.firstName} ${loan.borrower.lastName}` : '';
+    const matchesSearch = borrowerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       loan.id.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
   const statusCounts = {
     all: loans.length,
-    pending: loans.filter(l => l.status === 'pending').length,
-    active: loans.filter(l => l.status === 'active').length,
+    pending: loans.filter(l => ['applied', 'kyc_pending', 'kyc_verified', 'decision_pending', 'cooling_off'].includes(l.status)).length,
+    active: loans.filter(l => ['active', 'disbursed'].includes(l.status)).length,
     overdue: loans.filter(l => l.status === 'overdue').length,
     completed: loans.filter(l => l.status === 'completed').length,
   };
@@ -26,10 +42,10 @@ export default function Loans() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Loan Management</h1>
-          <p className="text-sm text-gray-500">Manage and monitor all loan applications and active loans</p>
+          <p className="text-sm text-gray-500">Live data • {loans.length} loans in database</p>
         </div>
         <button className="inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700">
-          <Download size={16} /> Export
+          <Download size={16} /> Export CSV
         </button>
       </div>
 
@@ -38,7 +54,7 @@ export default function Loans() {
         <Shield size={20} className="text-blue-600 shrink-0 mt-0.5" />
         <div>
           <p className="text-sm font-medium text-blue-900">Compliance Controls Active</p>
-          <p className="text-xs text-blue-700 mt-0.5">In duplum rule enforced • KFS required • Cooling-off periods active • Consent verified</p>
+          <p className="text-xs text-blue-700 mt-0.5">In duplum rule enforced ({loans.filter(l => l.inDuplumReached).length} loans at cap) • KFS required • Cooling-off periods active • Consent verified</p>
         </div>
       </div>
 
@@ -54,7 +70,7 @@ export default function Loans() {
             className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Filter size={16} className="text-gray-400" />
           {Object.entries(statusCounts).map(([status, count]) => (
             <button
@@ -93,13 +109,16 @@ export default function Loans() {
                 <tr key={loan.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <span className="text-sm font-mono text-gray-900">{loan.id}</span>
+                    <div className="text-xs text-gray-400">{loan.applicationNumber}</div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="text-sm font-medium text-gray-900">{loan.borrowerName}</div>
-                    <div className="text-xs text-gray-500">{loan.borrowerPhone}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {loan.borrower?.firstName} {loan.borrower?.lastName}
+                    </div>
+                    <div className="text-xs text-gray-500">{loan.borrower?.phone}</div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-sm text-gray-700">{loan.productName}</span>
+                    <span className="text-sm text-gray-700">{loan.product?.name || 'Unknown'}</span>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <span className="text-sm font-medium text-gray-900">KES {loan.principal.toLocaleString()}</span>
@@ -114,12 +133,14 @@ export default function Loans() {
                       loan.status === 'completed' ? 'bg-green-100 text-green-700' :
                       loan.status === 'active' ? 'bg-blue-100 text-blue-700' :
                       loan.status === 'overdue' ? 'bg-red-100 text-red-700' :
-                      loan.status === 'pending' ? 'bg-amber-100 text-amber-700' :
+                      loan.status === 'cooling_off' ? 'bg-purple-100 text-purple-700' :
+                      loan.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
                       loan.status === 'disbursed' ? 'bg-indigo-100 text-indigo-700' :
-                      'bg-gray-100 text-gray-700'
+                      loan.status === 'rejected' ? 'bg-gray-200 text-gray-700' :
+                      'bg-amber-100 text-amber-700'
                     }`}>
                       {loan.status === 'overdue' && <AlertTriangle size={10} />}
-                      {loan.status}
+                      {loan.status.replace('_', ' ')}
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -129,13 +150,12 @@ export default function Loans() {
                           2×
                         </span>
                       )}
-                      {loan.coolingOffEndsAt && (
-                        <span className="bg-blue-100 text-blue-700 text-xs px-1.5 py-0.5 rounded" title="Cooling-off active">
+                      {loan.status === 'cooling_off' && (
+                        <span className="bg-purple-100 text-purple-700 text-xs px-1.5 py-0.5 rounded" title="Cooling-off active">
                           <Clock size={10} className="inline" />
                         </span>
                       )}
-                      {loan.kfsAccepted && <span title="KFS accepted"><CheckCircle size={14} className="text-green-500" /></span>}
-                      {loan.consentGiven && <span title="Consent given"><Shield size={14} className="text-blue-500" /></span>}
+                      {loan.kfsAcceptedAt && <span title="KFS accepted"><CheckCircle size={14} className="text-green-500" /></span>}
                     </div>
                   </td>
                   <td className="px-4 py-3 text-center">
@@ -172,8 +192,8 @@ export default function Loans() {
         </div>
         <div className="bg-white rounded-xl p-4 border border-gray-200">
           <div className="text-xs text-gray-500">Cooling-Off Active</div>
-          <div className="text-lg font-bold text-blue-600 mt-1">
-            {loans.filter(l => l.coolingOffEndsAt).length} loans
+          <div className="text-lg font-bold text-purple-600 mt-1">
+            {loans.filter(l => l.status === 'cooling_off').length} loans
           </div>
         </div>
       </div>

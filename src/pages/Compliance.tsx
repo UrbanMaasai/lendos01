@@ -1,19 +1,35 @@
 import { useState } from 'react';
-import { auditEntries, complianceAlerts } from '../data/mockData';
-import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Eye, Download, Lock, Hash } from 'lucide-react';
+import { useDB } from '../contexts/DataContext';
+import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Download, Lock, Hash } from 'lucide-react';
 
 export default function Compliance() {
+  const { db, loading, mutate } = useDB();
   const [activeTab, setActiveTab] = useState<'alerts' | 'audit' | 'conduct' | 'consent'>('alerts');
 
-  const unresolvedAlerts = complianceAlerts.filter(a => !a.resolved);
-  const resolvedAlerts = complianceAlerts.filter(a => a.resolved);
+  if (loading || !db) {
+    return <div className="flex items-center justify-center h-96"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>;
+  }
+
+  const unresolvedAlerts = db.alerts.filter(a => !a.resolved);
+  const resolvedAlerts = db.alerts.filter(a => a.resolved);
+
+  const resolveAlert = (alertId: string) => {
+    mutate(d => {
+      const alert = d.alerts.find(a => a.id === alertId);
+      if (alert) {
+        alert.resolved = true;
+        alert.resolvedAt = new Date().toISOString();
+        alert.resolvedBy = 'U-ADMIN';
+      }
+    });
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Compliance & Audit</h1>
-          <p className="text-sm text-gray-500">Tamper-evident audit logs, conduct monitoring, and regulatory compliance</p>
+          <p className="text-sm text-gray-500">Tamper-evident • {db.auditLog.length} entries • 7-year retention</p>
         </div>
         <button className="inline-flex items-center gap-2 border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
           <Download size={16} /> Export Audit Log
@@ -47,8 +63,8 @@ export default function Compliance() {
             </div>
             <span className="text-xs text-gray-500">Hard-Blocks</span>
           </div>
-          <div className="text-2xl font-bold text-blue-600">8</div>
-          <div className="text-xs text-green-600">All active</div>
+          <div className="text-2xl font-bold text-blue-600">10</div>
+          <div className="text-xs text-green-600">All enforced</div>
         </div>
         <div className="bg-white rounded-xl p-4 border border-gray-200">
           <div className="flex items-center gap-2 mb-2">
@@ -57,8 +73,8 @@ export default function Compliance() {
             </div>
             <span className="text-xs text-gray-500">Audit Entries</span>
           </div>
-          <div className="text-2xl font-bold text-purple-600">12,847</div>
-          <div className="text-xs text-gray-500">7-year retention</div>
+          <div className="text-2xl font-bold text-purple-600">{db.auditLog.length}</div>
+          <div className="text-xs text-gray-500">Hash-chained</div>
         </div>
       </div>
 
@@ -87,7 +103,7 @@ export default function Compliance() {
       {/* Tab Content */}
       {activeTab === 'alerts' && (
         <div className="space-y-3">
-          {complianceAlerts.map((alert) => (
+          {db.alerts.map((alert) => (
             <div key={alert.id} className={`bg-white rounded-xl p-4 border ${
               alert.resolved ? 'border-gray-200 opacity-60' :
               alert.severity === 'critical' ? 'border-red-200 bg-red-50/50' :
@@ -128,7 +144,7 @@ export default function Compliance() {
                   </div>
                 </div>
                 {!alert.resolved && (
-                  <button className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                  <button onClick={() => resolveAlert(alert.id)} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
                     Resolve
                   </button>
                 )}
@@ -143,12 +159,12 @@ export default function Compliance() {
           <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Hash size={14} className="text-gray-400" />
-              <span className="text-xs text-gray-500">Tamper-evident • Hash-chained • 7-year retention</span>
+              <span className="text-xs text-gray-500">Tamper-evident • Hash-chained • 7-year retention • {db.auditLog.length} entries</span>
             </div>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gray-50 border-b border-gray-200 sticky top-0">
                 <tr>
                   <th className="text-left px-4 py-2.5 text-xs font-medium text-gray-500">Timestamp</th>
                   <th className="text-left px-4 py-2.5 text-xs font-medium text-gray-500">User</th>
@@ -158,24 +174,25 @@ export default function Compliance() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {auditEntries.map((entry) => (
+                {[...db.auditLog].reverse().map((entry) => (
                   <tr key={entry.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-xs text-gray-600 whitespace-nowrap">
                       {new Date(entry.timestamp).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3 text-xs text-gray-900 font-mono">{entry.user}</td>
+                    <td className="px-4 py-3 text-xs text-gray-900 font-mono">{entry.userName}</td>
                     <td className="px-4 py-3">
                       <span className={`text-xs px-2 py-0.5 rounded font-medium ${
                         entry.action.includes('BLOCK') || entry.action.includes('DUPLUM') ? 'bg-red-100 text-red-700' :
                         entry.action.includes('CONSENT') ? 'bg-blue-100 text-blue-700' :
-                        entry.action.includes('APPROVED') || entry.action.includes('DISBURSED') ? 'bg-green-100 text-green-700' :
+                        entry.action.includes('APPROVED') || entry.action.includes('DISBURSED') || entry.action.includes('REPAYMENT') ? 'bg-green-100 text-green-700' :
+                        entry.action === 'DATABASE_INITIALIZED' ? 'bg-purple-100 text-purple-700' :
                         'bg-gray-100 text-gray-700'
                       }`}>
                         {entry.action}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-gray-600 max-w-xs truncate">{entry.details}</td>
-                    <td className="px-4 py-3 text-xs text-gray-400 font-mono">{entry.hash}</td>
+                    <td className="px-4 py-3 text-xs text-gray-400 font-mono">{entry.hash.slice(0, 12)}...</td>
                   </tr>
                 ))}
               </tbody>
@@ -214,7 +231,7 @@ export default function Compliance() {
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">Contact Frequency Rules</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">Contact Frequency Rules (Enforced in Real-Time)</h3>
             <div className="space-y-2">
               {[
                 'Max 3 contacts per borrower per day (all channels combined)',
@@ -241,21 +258,19 @@ export default function Compliance() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {[
-                { type: 'Credit Check', description: 'Permission to pull CRB report', required: true },
-                { type: 'CRB Reporting', description: 'Permission to report to credit bureau', required: false },
-                { type: 'Marketing', description: 'Permission to send promotional messages', required: false },
-                { type: 'Data Processing', description: 'Permission to process personal data', required: true },
+                { type: 'Credit Check', description: 'Permission to pull CRB report', count: db.consents.filter((c: any) => c.consentType === 'credit_check' && c.granted).length },
+                { type: 'CRB Reporting', description: 'Permission to report to credit bureau', count: db.consents.filter((c: any) => c.consentType === 'crb_reporting' && c.granted).length },
+                { type: 'Marketing', description: 'Permission to send promotional messages', count: db.consents.filter((c: any) => c.consentType === 'marketing' && c.granted).length },
+                { type: 'Data Processing', description: 'Permission to process personal data', count: db.consents.filter((c: any) => c.consentType === 'data_processing' && c.granted).length },
               ].map((item, i) => (
                 <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
                   <div>
                     <div className="text-sm font-medium text-gray-900">{item.type}</div>
                     <div className="text-xs text-gray-500">{item.description}</div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {item.required && <span className="text-xs text-red-600">Required</span>}
-                    <div className={`w-8 h-5 rounded-full flex items-center ${item.required ? 'bg-emerald-500' : 'bg-gray-300'} p-0.5`}>
-                      <div className={`w-4 h-4 bg-white rounded-full transition-transform ${item.required ? 'translate-x-3' : ''}`} />
-                    </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-emerald-600">{item.count}</div>
+                    <div className="text-xs text-gray-500">granted</div>
                   </div>
                 </div>
               ))}
@@ -270,27 +285,17 @@ export default function Compliance() {
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">Recent Consent Activity</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">Recent Consent Activity (from Audit Log)</h3>
             <div className="space-y-2">
-              {[
-                { borrower: 'Grace A.', action: 'Withdrew marketing consent', time: '2 hours ago' },
-                { borrower: 'James M.', action: 'Granted all consent items', time: '5 hours ago' },
-                { borrower: 'Peter O.', action: 'Withdrew CRB reporting consent', time: '1 day ago' },
-                { borrower: 'Mary W.', action: 'Updated consent version (v2.1)', time: '2 days ago' },
-              ].map((item, i) => (
+              {db.auditLog.filter(e => e.action.includes('CONSENT')).slice(0, 5).map((entry, i) => (
                 <div key={i} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
-                  <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center text-xs font-medium text-gray-600">
-                      {item.borrower[0]}
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-900">{item.borrower}</span>
-                      <span className="text-sm text-gray-500 ml-2">{item.action}</span>
-                    </div>
-                  </div>
-                  <span className="text-xs text-gray-400">{item.time}</span>
+                  <div className="text-sm text-gray-700">{entry.details}</div>
+                  <span className="text-xs text-gray-400">{new Date(entry.timestamp).toLocaleDateString()}</span>
                 </div>
               ))}
+              {db.auditLog.filter(e => e.action.includes('CONSENT')).length === 0 && (
+                <p className="text-sm text-gray-500 text-center py-4">No consent events in audit log yet.</p>
+              )}
             </div>
           </div>
         </div>

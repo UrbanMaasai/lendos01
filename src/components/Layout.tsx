@@ -3,8 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, FileText, Phone, Package, Shield, BarChart3, 
   Plug, Settings, ChevronLeft, ChevronRight, Bell, Search,
-  Menu, LogOut, User, Database, Smartphone, BookOpen
+  Menu, LogOut, User, Users, Database, Smartphone, BookOpen
 } from 'lucide-react';
+import LanguageSwitcher from './LanguageSwitcher';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,8 @@ const navigation = [
   { name: 'Reports', href: '/app/reports', icon: BarChart3 },
   { name: 'Compliance Reports', href: '/compliance/reports', icon: FileText },
   { name: 'Loan Simulator', href: '/tools/simulator', icon: BarChart3 },
+  { name: 'Data Export', href: '/app/data-export', icon: BarChart3 },
+  { name: 'Role-Based Access', href: '/app/roles', icon: Users },
   { name: 'Integrations', href: '/app/integrations', icon: Plug },
   { name: 'Webhooks', href: '/app/integrations/webhooks', icon: Plug },
   { name: 'Database', href: '/app/database', icon: Database },
@@ -147,6 +150,7 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                 M-Pesa Connected
               </div>
+              <LanguageSwitcher />
               <button className="relative p-2 rounded-lg hover:bg-gray-100">
                 <Bell size={20} className="text-gray-600" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { DataProvider } from './contexts/DataContext';
 import { NotificationProvider } from './components/NotificationProvider';
+import { LanguageProvider } from './i18n/LanguageContext';
 import Layout from './components/Layout';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -20,12 +21,16 @@ import ComplianceReports from './pages/compliance/ComplianceReports';
 import LoanSimulator from './pages/tools/LoanSimulator';
 import AuditLogExplorer from './pages/AuditLogExplorer';
 import WebhookManagement from './pages/WebhookManagement';
+import DataExport from './pages/DataExport';
+import RoleBasedAccessDemo from './pages/RoleBasedAccessDemo';
+import CommandPalette from './components/CommandPalette';
 
 function App() {
   return (
-    <NotificationProvider>
-      <DataProvider>
-        <BrowserRouter>
+    <LanguageProvider>
+      <NotificationProvider>
+        <DataProvider>
+          <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
@@ -43,13 +48,17 @@ function App() {
             <Route path="/platform/tenants" element={<Layout><TenantManagement /></Layout>} />
             <Route path="/compliance/reports" element={<Layout><ComplianceReports /></Layout>} />
             <Route path="/tools/simulator" element={<Layout><LoanSimulator /></Layout>} />
+            <Route path="/app/data-export" element={<Layout><DataExport /></Layout>} />
+            <Route path="/app/roles" element={<Layout><RoleBasedAccessDemo /></Layout>} />
             <Route path="/borrower" element={<BorrowerApp />} />
             <Route path="/docs/api" element={<ApiDocs />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <CommandPalette />
         </BrowserRouter>
       </DataProvider>
     </NotificationProvider>
+  </LanguageProvider>
   );
 }
 

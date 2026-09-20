@@ -281,6 +281,7 @@ export async function createSeedData(): Promise<Database> {
     auditLog: [genesisAudit],
     alerts,
     complaints,
+    webhooks: [],
     _meta: {
       version: '1.0.0',
       lastBackup: now,

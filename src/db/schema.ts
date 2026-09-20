@@ -250,6 +250,22 @@ export interface Complaint {
   resolvedAt?: string;
 }
 
+export interface Webhook {
+  id: string;
+  tenantId: string;
+  name: string;
+  url: string;
+  secret?: string;
+  events: string[];
+  active: boolean;
+  createdAt: string;
+  stats: {
+    totalDeliveries: number;
+    successRate: number;
+    lastDelivery: string | null;
+  };
+}
+
 // Database state shape
 export interface Database {
   tenants: Tenant[];
@@ -265,6 +281,7 @@ export interface Database {
   auditLog: AuditEntry[];
   alerts: ComplianceAlert[];
   complaints: Complaint[];
+  webhooks: Webhook[];
   _meta: {
     version: string;
     lastBackup: string;

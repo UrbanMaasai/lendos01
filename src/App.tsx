@@ -18,6 +18,8 @@ import ApiDocs from './pages/ApiDocs';
 import TenantManagement from './pages/platform/TenantManagement';
 import ComplianceReports from './pages/compliance/ComplianceReports';
 import LoanSimulator from './pages/tools/LoanSimulator';
+import AuditLogExplorer from './pages/AuditLogExplorer';
+import WebhookManagement from './pages/WebhookManagement';
 
 function App() {
   return (
@@ -32,8 +34,10 @@ function App() {
             <Route path="/app/collections" element={<Layout><Collections /></Layout>} />
             <Route path="/app/products" element={<Layout><Products /></Layout>} />
             <Route path="/app/compliance" element={<Layout><Compliance /></Layout>} />
+            <Route path="/app/compliance/audit" element={<Layout><AuditLogExplorer /></Layout>} />
             <Route path="/app/reports" element={<Layout><Reports /></Layout>} />
             <Route path="/app/integrations" element={<Layout><Integrations /></Layout>} />
+            <Route path="/app/integrations/webhooks" element={<Layout><WebhookManagement /></Layout>} />
             <Route path="/app/settings" element={<Layout><Settings /></Layout>} />
             <Route path="/app/database" element={<Layout><DatabaseConsole /></Layout>} />
             <Route path="/platform/tenants" element={<Layout><TenantManagement /></Layout>} />

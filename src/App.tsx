@@ -28,37 +28,37 @@ import CommandPalette from './components/CommandPalette';
 function App() {
   return (
     <LanguageProvider>
-      <NotificationProvider>
-        <DataProvider>
+      <DataProvider>
+        <NotificationProvider>
           <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/app/dashboard" element={<Layout><Dashboard /></Layout>} />
-            <Route path="/app/loans" element={<Layout><Loans /></Layout>} />
-            <Route path="/app/collections" element={<Layout><Collections /></Layout>} />
-            <Route path="/app/products" element={<Layout><Products /></Layout>} />
-            <Route path="/app/compliance" element={<Layout><Compliance /></Layout>} />
-            <Route path="/app/compliance/audit" element={<Layout><AuditLogExplorer /></Layout>} />
-            <Route path="/app/reports" element={<Layout><Reports /></Layout>} />
-            <Route path="/app/integrations" element={<Layout><Integrations /></Layout>} />
-            <Route path="/app/integrations/webhooks" element={<Layout><WebhookManagement /></Layout>} />
-            <Route path="/app/settings" element={<Layout><Settings /></Layout>} />
-            <Route path="/app/database" element={<Layout><DatabaseConsole /></Layout>} />
-            <Route path="/platform/tenants" element={<Layout><TenantManagement /></Layout>} />
-            <Route path="/compliance/reports" element={<Layout><ComplianceReports /></Layout>} />
-            <Route path="/tools/simulator" element={<Layout><LoanSimulator /></Layout>} />
-            <Route path="/app/data-export" element={<Layout><DataExport /></Layout>} />
-            <Route path="/app/roles" element={<Layout><RoleBasedAccessDemo /></Layout>} />
-            <Route path="/borrower" element={<BorrowerApp />} />
-            <Route path="/docs/api" element={<ApiDocs />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          <CommandPalette />
-        </BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/app/dashboard" element={<Layout><Dashboard /></Layout>} />
+              <Route path="/app/loans" element={<Layout><Loans /></Layout>} />
+              <Route path="/app/collections" element={<Layout><Collections /></Layout>} />
+              <Route path="/app/products" element={<Layout><Products /></Layout>} />
+              <Route path="/app/compliance" element={<Layout><Compliance /></Layout>} />
+              <Route path="/app/compliance/audit" element={<Layout><AuditLogExplorer /></Layout>} />
+              <Route path="/app/reports" element={<Layout><Reports /></Layout>} />
+              <Route path="/app/integrations" element={<Layout><Integrations /></Layout>} />
+              <Route path="/app/integrations/webhooks" element={<Layout><WebhookManagement /></Layout>} />
+              <Route path="/app/settings" element={<Layout><Settings /></Layout>} />
+              <Route path="/app/database" element={<Layout><DatabaseConsole /></Layout>} />
+              <Route path="/platform/tenants" element={<Layout><TenantManagement /></Layout>} />
+              <Route path="/compliance/reports" element={<Layout><ComplianceReports /></Layout>} />
+              <Route path="/tools/simulator" element={<Layout><LoanSimulator /></Layout>} />
+              <Route path="/app/data-export" element={<Layout><DataExport /></Layout>} />
+              <Route path="/app/roles" element={<Layout><RoleBasedAccessDemo /></Layout>} />
+              <Route path="/borrower" element={<BorrowerApp />} />
+              <Route path="/docs/api" element={<ApiDocs />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <CommandPalette />
+          </BrowserRouter>
+        </NotificationProvider>
       </DataProvider>
-    </NotificationProvider>
-  </LanguageProvider>
+    </LanguageProvider>
   );
 }
 

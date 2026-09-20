@@ -23,6 +23,11 @@ import AuditLogExplorer from './pages/AuditLogExplorer';
 import WebhookManagement from './pages/WebhookManagement';
 import DataExport from './pages/DataExport';
 import RoleBasedAccessDemo from './pages/RoleBasedAccessDemo';
+import BulkImport from './pages/BulkImport';
+import PerformanceMonitoring from './pages/PerformanceMonitoring';
+import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import ApiPlayground from './pages/ApiPlayground';
+import DocumentManagement from './pages/DocumentManagement';
 import CommandPalette from './components/CommandPalette';
 
 function App() {
@@ -48,12 +53,16 @@ function App() {
               <Route path="/platform/tenants" element={<Layout><TenantManagement /></Layout>} />
               <Route path="/compliance/reports" element={<Layout><ComplianceReports /></Layout>} />
               <Route path="/tools/simulator" element={<Layout><LoanSimulator /></Layout>} />
-              <Route path="/app/data-export" element={<Layout><DataExport /></Layout>} />
-              <Route path="/app/roles" element={<Layout><RoleBasedAccessDemo /></Layout>} />
-              <Route path="/borrower" element={<BorrowerApp />} />
-              <Route path="/docs/api" element={<ApiDocs />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <Route path="/app/data-export" element={<Layout><DataExport /></Layout>} />
+            <Route path="/app/roles" element={<Layout><RoleBasedAccessDemo /></Layout>} />
+            <Route path="/app/bulk-import" element={<Layout><BulkImport /></Layout>} />
+            <Route path="/app/monitoring" element={<Layout><PerformanceMonitoring /></Layout>} />
+            <Route path="/app/analytics" element={<Layout><AdvancedAnalytics /></Layout>} />
+            <Route path="/app/api-playground" element={<Layout><ApiPlayground /></Layout>} />
+            <Route path="/app/documents" element={<Layout><DocumentManagement /></Layout>} />
+            <Route path="/borrower" element={<BorrowerApp />} />
+            <Route path="/docs/api" element={<ApiDocs />} />
+            <Route path="*" element={<Navigate to="/" replace />} />            </Routes>
             <CommandPalette />
           </BrowserRouter>
         </NotificationProvider>

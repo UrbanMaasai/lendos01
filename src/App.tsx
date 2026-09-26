@@ -28,6 +28,11 @@ import PerformanceMonitoring from './pages/PerformanceMonitoring';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import ApiPlayground from './pages/ApiPlayground';
 import DocumentManagement from './pages/DocumentManagement';
+import CustomerSupport from './pages/CustomerSupport';
+import FraudDetection from './pages/FraudDetection';
+import TemplateManager from './pages/TemplateManager';
+import RegulatoryCalendar from './pages/RegulatoryCalendar';
+import CommissionTracking from './pages/CommissionTracking';
 import CommandPalette from './components/CommandPalette';
 
 function App() {
@@ -60,6 +65,11 @@ function App() {
             <Route path="/app/analytics" element={<Layout><AdvancedAnalytics /></Layout>} />
             <Route path="/app/api-playground" element={<Layout><ApiPlayground /></Layout>} />
             <Route path="/app/documents" element={<Layout><DocumentManagement /></Layout>} />
+            <Route path="/app/support" element={<Layout><CustomerSupport /></Layout>} />
+            <Route path="/app/fraud" element={<Layout><FraudDetection /></Layout>} />
+            <Route path="/app/templates" element={<Layout><TemplateManager /></Layout>} />
+            <Route path="/app/regulatory-calendar" element={<Layout><RegulatoryCalendar /></Layout>} />
+            <Route path="/app/commissions" element={<Layout><CommissionTracking /></Layout>} />
             <Route path="/borrower" element={<BorrowerApp />} />
             <Route path="/docs/api" element={<ApiDocs />} />
             <Route path="*" element={<Navigate to="/" replace />} />            </Routes>

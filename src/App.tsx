@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { DataProvider } from './contexts/DataContext';
 import { NotificationProvider } from './components/NotificationProvider';
 import { LanguageProvider } from './i18n/LanguageContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import CommandPalette from './components/CommandPalette';
+import GlobalSearch from './components/GlobalSearch';
 
 // Lazy load heavy components
 const Landing = lazy(() => import('./pages/Landing'));
@@ -50,12 +52,13 @@ const LoadingFallback = () => (
 
 function App() {
   return (
-    <LanguageProvider>
-      <DataProvider>
-        <NotificationProvider>
-          <BrowserRouter>
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <DataProvider>
+          <NotificationProvider>
+            <BrowserRouter>
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/app/dashboard" element={<Layout><Dashboard /></Layout>} />
@@ -90,10 +93,11 @@ function App() {
               </Routes>
             </Suspense>
             <CommandPalette />
-          </BrowserRouter>
-        </NotificationProvider>
-      </DataProvider>
-    </LanguageProvider>
+            <GlobalSearch />
+          </BrowserRouter>          </NotificationProvider>
+        </DataProvider>
+      </LanguageProvider>
+    </ErrorBoundary>
   );
 }
 

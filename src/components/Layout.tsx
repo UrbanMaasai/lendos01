@@ -201,14 +201,25 @@ export default function Layout({ children }: LayoutProps) {
               <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2 rounded hover:bg-gray-100">
                 <Menu size={20} />
               </button>
-              <div className="hidden sm:flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 w-64">
+              <button 
+                onClick={() => {
+                  // Trigger global search
+                  const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true });
+                  window.dispatchEvent(event);
+                }}
+                className="hidden sm:flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 w-64 hover:bg-gray-200 transition-colors"
+              >
                 <Search size={16} className="text-gray-400" />
                 <input 
                   type="text" 
                   placeholder="Search loans, borrowers..." 
-                  className="bg-transparent border-none outline-none text-sm w-full"
+                  className="bg-transparent border-none outline-none text-sm w-full pointer-events-none"
+                  readOnly
                 />
-              </div>
+                <kbd className="hidden lg:inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-gray-300 rounded text-xs text-gray-500">
+                  ⌘K
+                </kbd>
+              </button>
             </div>
             <div className="flex items-center gap-3">
               <div className="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-medium">

@@ -7,6 +7,7 @@ export function useWebhooks() {
 
   const loadWebhooks = () => {
     const db = getDB();
+    if (!db) return;
     setWebhooks(db.webhooks || []);
   };
 

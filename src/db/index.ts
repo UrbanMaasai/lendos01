@@ -19,10 +19,7 @@ export async function initDB(): Promise<Database> {
   return dbInstance!;
 }
 
-export function getDB(): Database {
-  if (!dbInstance) {
-    throw new Error('Database not initialized. Call initDB() first.');
-  }
+export function getDB(): Database | null {
   return dbInstance;
 }
 

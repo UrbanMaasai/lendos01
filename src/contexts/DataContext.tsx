@@ -26,14 +26,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     });
     
     const unsubscribe = subscribe(() => {
-      setDb({ ...getDB() });
+      const currentDb = getDB();
+      if (currentDb) {
+        setDb({ ...currentDb });
+      }
     });
     
     return unsubscribe;
   }, []);
 
   const refresh = useCallback(() => {
-    setDb({ ...getDB() });
+    const currentDb = getDB();
+    if (currentDb) {
+      setDb({ ...currentDb });
+    }
   }, []);
 
   const mutate = useCallback((updater: (db: Database) => void) => {
@@ -49,6 +55,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     after?: any
   ) => {
     const currentDb = getDB();
+    if (!currentDb) return;
     await writeAuditLog(
       currentDb,
       action,

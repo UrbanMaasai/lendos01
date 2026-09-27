@@ -10,6 +10,10 @@ export function useAuditLog() {
     const loadLogs = () => {
       try {
         const db = getDB();
+        if (!db) {
+          setIsLoading(false);
+          return;
+        }
         const auditLogs = [...db.auditLog];
         // Sort by timestamp descending (most recent first)
         auditLogs.sort((a: AuditEntry, b: AuditEntry) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());

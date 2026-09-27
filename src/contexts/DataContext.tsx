@@ -20,10 +20,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    initDB().then(initialDb => {
-      setDb(initialDb);
-      setLoading(false);
-    });
+    initDB()
+      .then(initialDb => {
+        setDb(initialDb);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Failed to initialize database in DataProvider:', error);
+        setLoading(false);
+        // Try to get whatever database state exists
+        const currentDb = getDB();
+        if (currentDb) {
+          setDb(currentDb);
+        }
+      });
     
     const unsubscribe = subscribe(() => {
       const currentDb = getDB();

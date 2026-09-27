@@ -9,14 +9,22 @@ let dbInstance: Database | null = null;
 let listeners: Array<() => void> = [];
 
 export async function initDB(): Promise<Database> {
-  const existing = loadDB();
-  if (existing) {
-    dbInstance = existing as Database;
-  } else {
+  try {
+    const existing = loadDB();
+    if (existing) {
+      dbInstance = existing as Database;
+    } else {
+      dbInstance = await createSeedData();
+      saveDB(dbInstance);
+    }
+    return dbInstance!;
+  } catch (error) {
+    console.error('Failed to initialize database:', error);
+    // If initialization fails, create a minimal valid database
     dbInstance = await createSeedData();
     saveDB(dbInstance);
+    return dbInstance!;
   }
-  return dbInstance!;
 }
 
 export function getDB(): Database | null {
@@ -24,7 +32,10 @@ export function getDB(): Database | null {
 }
 
 export function updateDB(updater: (db: Database) => void) {
-  if (!dbInstance) throw new Error('Database not initialized');
+  if (!dbInstance) {
+    console.warn('updateDB called before database initialization');
+    return;
+  }
   updater(dbInstance);
   saveDB(dbInstance);
   listeners.forEach(l => l());

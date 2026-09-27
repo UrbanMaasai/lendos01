@@ -8,7 +8,13 @@ const CURRENT_TENANT = 'T-MIKA-001';
 
 export async function createSeedData(): Promise<Database> {
   const now = new Date().toISOString();
-  const genesisHash = await sha256('GENESIS-' + now);
+  let genesisHash: string;
+  try {
+    genesisHash = await sha256('GENESIS-' + now);
+  } catch (error) {
+    console.error('Failed to generate genesis hash:', error);
+    genesisHash = '0'.repeat(64); // Fallback hash
+  }
   
   const tenant: Tenant = {
     id: CURRENT_TENANT,

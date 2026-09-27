@@ -11,35 +11,70 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const navigation = [
-  { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
-  { name: 'Loans', href: '/app/loans', icon: FileText },
-  { name: 'Collections', href: '/app/collections', icon: Phone },
-  { name: 'Products', href: '/app/products', icon: Package },
-  { name: 'Documents', href: '/app/documents', icon: FileText },
-  { name: 'Compliance', href: '/app/compliance', icon: Shield },
-  { name: 'Audit Log', href: '/app/compliance/audit', icon: Shield },
-  { name: 'Reports', href: '/app/reports', icon: BarChart3 },
-  { name: 'Analytics', href: '/app/analytics', icon: BarChart3 },
-  { name: 'Compliance Reports', href: '/compliance/reports', icon: FileText },
-  { name: 'Loan Simulator', href: '/tools/simulator', icon: BarChart3 },
-  { name: 'Data Export', href: '/app/data-export', icon: BarChart3 },
-  { name: 'Bulk Import', href: '/app/bulk-import', icon: BarChart3 },
-  { name: 'Monitoring', href: '/app/monitoring', icon: BarChart3 },
-  { name: 'API Playground', href: '/app/api-playground', icon: BookOpen },
-  { name: 'Customer Support', href: '/app/support', icon: Phone },
-  { name: 'Fraud Detection', href: '/app/fraud', icon: Shield },
-  { name: 'Templates', href: '/app/templates', icon: FileText },
-  { name: 'Regulatory Calendar', href: '/app/regulatory-calendar', icon: BarChart3 },
-  { name: 'Commissions', href: '/app/commissions', icon: BarChart3 },
-  { name: 'Role-Based Access', href: '/app/roles', icon: Users },
-  { name: 'Integrations', href: '/app/integrations', icon: Plug },
-  { name: 'Webhooks', href: '/app/integrations/webhooks', icon: Plug },
-  { name: 'Database', href: '/app/database', icon: Database },
-  { name: 'Tenant Management', href: '/platform/tenants', icon: Database },
-  { name: 'Borrower App', href: '/borrower', icon: Smartphone },
-  { name: 'API Docs', href: '/docs/api', icon: BookOpen },
-  { name: 'Settings', href: '/app/settings', icon: Settings },
+const navigationGroups = [
+  {
+    label: 'Core',
+    items: [
+      { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
+      { name: 'Loans', href: '/app/loans', icon: FileText },
+      { name: 'Collections', href: '/app/collections', icon: Phone },
+      { name: 'Products', href: '/app/products', icon: Package },
+    ],
+  },
+  {
+    label: 'Compliance',
+    items: [
+      { name: 'Compliance', href: '/app/compliance', icon: Shield },
+      { name: 'Audit Log', href: '/app/compliance/audit', icon: Shield },
+      { name: 'Fraud Detection', href: '/app/fraud', icon: Shield },
+      { name: 'Regulatory Calendar', href: '/app/regulatory-calendar', icon: BarChart3 },
+    ],
+  },
+  {
+    label: 'Operations',
+    items: [
+      { name: 'Documents', href: '/app/documents', icon: FileText },
+      { name: 'Customer Support', href: '/app/support', icon: Phone },
+      { name: 'Templates', href: '/app/templates', icon: FileText },
+      { name: 'Commissions', href: '/app/commissions', icon: BarChart3 },
+    ],
+  },
+  {
+    label: 'Analytics',
+    items: [
+      { name: 'Reports', href: '/app/reports', icon: BarChart3 },
+      { name: 'Analytics', href: '/app/analytics', icon: BarChart3 },
+      { name: 'Compliance Reports', href: '/compliance/reports', icon: FileText },
+      { name: 'Monitoring', href: '/app/monitoring', icon: BarChart3 },
+    ],
+  },
+  {
+    label: 'Tools',
+    items: [
+      { name: 'Loan Simulator', href: '/tools/simulator', icon: BarChart3 },
+      { name: 'Data Export', href: '/app/data-export', icon: BarChart3 },
+      { name: 'Bulk Import', href: '/app/bulk-import', icon: BarChart3 },
+      { name: 'API Playground', href: '/app/api-playground', icon: BookOpen },
+    ],
+  },
+  {
+    label: 'Admin',
+    items: [
+      { name: 'Integrations', href: '/app/integrations', icon: Plug },
+      { name: 'Webhooks', href: '/app/integrations/webhooks', icon: Plug },
+      { name: 'Database', href: '/app/database', icon: Database },
+      { name: 'Tenant Management', href: '/platform/tenants', icon: Database },
+      { name: 'Role-Based Access', href: '/app/roles', icon: Users },
+    ],
+  },
+  {
+    label: 'External',
+    items: [
+      { name: 'Borrower App', href: '/borrower', icon: Smartphone },
+      { name: 'API Docs', href: '/docs/api', icon: BookOpen },
+      { name: 'Settings', href: '/app/settings', icon: Settings },
+    ],
+  },
 ];
 
 export default function Layout({ children }: LayoutProps) {
@@ -65,24 +100,35 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
-          {navigation.map((item) => {
-            const isActive = location.pathname === item.href;
-            return (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                  isActive 
-                    ? 'bg-emerald-600 text-white' 
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                }`}
-              >
-                <item.icon size={20} />
-                {sidebarOpen && <span className="text-sm font-medium">{item.name}</span>}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 p-4 space-y-4 overflow-y-auto">
+          {navigationGroups.map((group) => (
+            <div key={group.label}>
+              {sidebarOpen && (
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
+                  {group.label}
+                </div>
+              )}
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                        isActive 
+                          ? 'bg-emerald-600 text-white' 
+                          : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                      }`}
+                    >
+                      <item.icon size={18} />
+                      {sidebarOpen && <span className="text-sm font-medium">{item.name}</span>}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* User section */}
@@ -115,23 +161,32 @@ export default function Layout({ children }: LayoutProps) {
                 <ChevronLeft size={20} />
               </button>
             </div>
-            <nav className="space-y-1">
-              {navigation.map((item) => {
-                const isActive = location.pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                      isActive ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-slate-800'
-                    }`}
-                  >
-                    <item.icon size={20} />
-                    <span className="text-sm font-medium">{item.name}</span>
-                  </Link>
-                );
-              })}
+            <nav className="space-y-4 overflow-y-auto max-h-[calc(100vh-120px)]">
+              {navigationGroups.map((group) => (
+                <div key={group.label}>
+                  <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
+                    {group.label}
+                  </div>
+                  <div className="space-y-1">
+                    {group.items.map((item) => {
+                      const isActive = location.pathname === item.href;
+                      return (
+                        <Link
+                          key={item.name}
+                          to={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                            isActive ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-slate-800'
+                          }`}
+                        >
+                          <item.icon size={18} />
+                          <span className="text-sm font-medium">{item.name}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </nav>
           </aside>
         </div>

@@ -25,7 +25,11 @@ export default function DatabaseConsole() {
     }
     try {
       const loan = await applyForLoan(selectedBorrower, selectedProduct, principal);
-      logAction('success', `Loan ${loan.id} created — KES ${principal.toLocaleString()}`);
+      if (loan) {
+        logAction('success', `Loan ${loan.id} created — KES ${principal.toLocaleString()}`);
+      } else {
+        logAction('error', 'Database not ready');
+      }
     } catch (e: any) {
       logAction('error', e.message);
     }
@@ -43,7 +47,11 @@ export default function DatabaseConsole() {
   const handleDecision = async (loanId: string) => {
     try {
       const result = await runDecision(loanId);
-      logAction('success', `Decision: ${result.decision} (Score: ${result.score}/100)`);
+      if (result) {
+        logAction('success', `Decision: ${result.decision} (Score: ${result.score}/100)`);
+      } else {
+        logAction('error', 'Database not ready');
+      }
     } catch (e: any) {
       logAction('error', e.message);
     }
@@ -52,7 +60,11 @@ export default function DatabaseConsole() {
   const handleDisburse = async (loanId: string) => {
     try {
       const txn = await disburse(loanId);
-      logAction('success', `Disbursement initiated. M-Pesa txn: ${txn.id}`);
+      if (txn) {
+        logAction('success', `Disbursement initiated. M-Pesa txn: ${txn.id}`);
+      } else {
+        logAction('error', 'Database not ready');
+      }
     } catch (e: any) {
       logAction('error', e.message);
     }
@@ -61,7 +73,11 @@ export default function DatabaseConsole() {
   const handleRepay = async (loanId: string) => {
     try {
       const txn = await recordRepayment(loanId, repaymentAmount);
-      logAction('success', `Repayment KES ${repaymentAmount.toLocaleString()} received. Receipt: ${txn.mpesaReceipt}`);
+      if (txn) {
+        logAction('success', `Repayment KES ${repaymentAmount.toLocaleString()} received. Receipt: ${txn.mpesaReceipt}`);
+      } else {
+        logAction('error', 'Database not ready');
+      }
     } catch (e: any) {
       logAction('error', e.message);
     }

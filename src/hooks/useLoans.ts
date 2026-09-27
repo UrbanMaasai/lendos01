@@ -9,11 +9,11 @@ export function useLoans() {
     loans: [] as Loan[],
     products: [] as LoanProduct[],
     borrowers: [] as Borrower[],
-    applyForLoan: async () => { throw new Error('DB not ready'); },
-    acceptKFS: async () => { throw new Error('DB not ready'); },
-    runDecision: async () => { throw new Error('DB not ready'); },
-    disburse: async () => { throw new Error('DB not ready'); },
-    recordRepayment: async () => { throw new Error('DB not ready'); },
+    applyForLoan: async () => { console.warn('DB not ready'); return null; },
+    acceptKFS: async () => { console.warn('DB not ready'); },
+    runDecision: async () => { console.warn('DB not ready'); return null; },
+    disburse: async () => { console.warn('DB not ready'); return null; },
+    recordRepayment: async () => { console.warn('DB not ready'); return null; },
   };
   
   if (!db) return emptyState;

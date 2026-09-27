@@ -8,9 +8,9 @@ export function useCollections() {
   const emptyState = {
     cases: [] as CollectionCase[],
     contacts: [],
-    contactBorrower: async () => { throw new Error('DB not ready'); },
-    logPTP: async () => { throw new Error('DB not ready'); },
-    escalate: async () => { throw new Error('DB not ready'); },
+    contactBorrower: async () => { console.warn('DB not ready'); },
+    logPTP: async () => { console.warn('DB not ready'); },
+    escalate: async () => { console.warn('DB not ready'); },
   };
   
   if (!db) return emptyState;

@@ -21,7 +21,11 @@ export function loadDB(): any {
 }
 
 export function saveDB(db: any) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  } catch (error) {
+    console.error('Failed to save database to localStorage:', error);
+  }
 }
 
 // ---------------------------------------------------------------------------

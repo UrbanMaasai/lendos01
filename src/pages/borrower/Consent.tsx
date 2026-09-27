@@ -27,6 +27,10 @@ export default function ConsentPage({ borrowerId, onComplete }: ConsentPageProps
   const [scrolledToBottom, setScrolledToBottom] = useState(false);
   const [error, setError] = useState('');
 
+  if (!db) {
+    return <div className="flex items-center justify-center h-96"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>;
+  }
+
   useEffect(() => {
     // Check if already consented
     if (db && hasConsent(db, borrowerId, 'data_processing') && hasConsent(db, borrowerId, 'credit_check')) {

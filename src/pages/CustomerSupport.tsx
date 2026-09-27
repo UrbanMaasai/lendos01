@@ -33,6 +33,10 @@ export default function CustomerSupport() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newMessage, setNewMessage] = useState('');
 
+  if (!db) {
+    return <div className="flex items-center justify-center h-96"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>;
+  }
+
   // Mock tickets
   const [tickets, setTickets] = useState<SupportTicket[]>([
     {

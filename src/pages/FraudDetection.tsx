@@ -25,6 +25,10 @@ export default function FraudDetection() {
   const [selectedAlert, setSelectedAlert] = useState<FraudAlert | null>(null);
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
 
+  if (!db) {
+    return <div className="flex items-center justify-center h-96"><div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>;
+  }
+
   // Mock fraud alerts
   const [alerts, setAlerts] = useState<FraudAlert[]>([
     {

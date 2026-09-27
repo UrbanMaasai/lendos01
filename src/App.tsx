@@ -7,6 +7,8 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import CommandPalette from './components/CommandPalette';
 import GlobalSearch from './components/GlobalSearch';
+import KeyboardShortcuts from './components/KeyboardShortcuts';
+import QuickActions from './components/QuickActions';
 
 // Lazy load heavy components
 const Landing = lazy(() => import('./pages/Landing'));
@@ -94,6 +96,8 @@ function App() {
             </Suspense>
             <CommandPalette />
             <GlobalSearch />
+            <KeyboardShortcuts />
+            <QuickActions />
           </BrowserRouter>          </NotificationProvider>
         </DataProvider>
       </LanguageProvider>

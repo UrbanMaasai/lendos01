@@ -6,6 +6,9 @@ import {
   Menu, LogOut, User, Users, Database, Smartphone, BookOpen
 } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
+import RecentActivity from './RecentActivity';
+import DarkMode from './DarkMode';
+import Breadcrumbs from './Breadcrumbs';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -227,9 +230,10 @@ export default function Layout({ children }: LayoutProps) {
                 M-Pesa Connected
               </div>
               <LanguageSwitcher />
-              <button className="relative p-2 rounded-lg hover:bg-gray-100">
-                <Bell size={20} className="text-gray-600" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+              <RecentActivity />
+              <DarkMode />
+              <button className="p-2 rounded-lg hover:bg-gray-100" title="Keyboard Shortcuts (Press ?)">
+                <span className="text-sm font-medium text-gray-600">⌘</span>
               </button>
               <button className="p-2 rounded-lg hover:bg-gray-100">
                 <LogOut size={20} className="text-gray-600" />
@@ -240,6 +244,7 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Page content */}
         <main className="p-4 lg:p-6">
+          <Breadcrumbs />
           {children}
         </main>
       </div>
